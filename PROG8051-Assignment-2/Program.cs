@@ -26,6 +26,10 @@ namespace CSharpTutorials
             {
                 Console.WriteLine("Invalid Move");
             }
+            else if (X == Y)
+            {
+                Console.WriteLine("Cannot move diagonally");
+            }
 
 
 
@@ -151,6 +155,7 @@ namespace CSharpTutorials
         public void IsValidMove(Player player, char direction)
         {
 
+
         }
         public void CollectGem(Player player)
         {
@@ -158,14 +163,12 @@ namespace CSharpTutorials
         }
 
     }
+    // Create a class for cell occupants
     class Cell
     {
-
+        string[] occupant = { "P1", "P2", "G", "O", "-" };
     }
-    class Game
-    {
-
-    }
+    
 
 
     class Program
