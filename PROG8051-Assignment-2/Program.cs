@@ -15,7 +15,7 @@ namespace CSharpTutorials
         // Fields
         int row;
         int col;
-        //public int[] axis;
+        
 
         // Properties
         public int X { get { return row; } }
@@ -52,12 +52,12 @@ namespace CSharpTutorials
     {
         
         public string name;
-        int count = 0;
+        public int GemCount;
 
         //Properties
        
         public Position position;
-        public int GemCount { get { return count; } }
+         
 
         // Create a method to get direction from the user such as 'U', 'D', 'L', 'R'
         public string Move(char direction)
@@ -99,12 +99,12 @@ namespace CSharpTutorials
     {
 
         public string[,] Grid = new string[6, 6];
-
+        public int gemsPresent;
 
         //Constructor
         public Board(int gems, int obstacles)
         {
-
+           
 
             /* string[,] board1 = {{"P1", "-", "G", "-", "-","O"},{"-", "O", "-", "G", "-","-"},{"O", "-", "-", "-", "-","G"} ,
                                 {"-", "G", "-", "O", "-","-"},{"-", "-", "-", "G", "-","-"},{"G", "-", "O", "-", "-","P2"}};*/
@@ -122,7 +122,8 @@ namespace CSharpTutorials
             string elementSymbol2 = "O";
             PlaceGameElements(gems, elementSymbol1);
             PlaceGameElements(obstacles, elementSymbol2);
-
+           // gemsPresent = gems;
+            
         }
         public void PlaceGameElements(int numElements, string elementSymbol)
         {
@@ -157,6 +158,7 @@ namespace CSharpTutorials
                     Console.Write(Grid[a, b] + "  ");
                 }
             }
+            Console.WriteLine();
 
 
         }
@@ -213,18 +215,14 @@ namespace CSharpTutorials
         public void CollectGem(Player player)
 
         {
-            int GemCount = player.GemCount;
-
-
+          
             if (Grid[player.position.X, player.position.Y] == "G")
             {
-                GemCount++;
-                
+              
+               player.GemCount++;
 
             }
-            
-
-
+ 
         }
 
     }
@@ -244,16 +242,19 @@ namespace CSharpTutorials
         Player player1;
         Player player2;
         Player CurrentTurn;
+      
         char direction;
+        
 
         int TotalTurns = 0;
         public Game()
         {
-            Console.WriteLine("Let the game begin :");
-            board = new Board(5, 4);
+            
+            board = new Board(7, 4);
             player1 = new Player();
             player2 = new Player();
         }
+        
         public void StartGame()
         {
             player1.name = "P1";
@@ -264,7 +265,7 @@ namespace CSharpTutorials
             board.display();
             while (!IsGameOver()) { SwitchTurn(); }
             DeclareWinner();
-
+            
         }
         public void SwitchTurn()
         {
@@ -272,9 +273,9 @@ namespace CSharpTutorials
             repeat:
             if (TotalTurns % 2 == 0)
             {
-                Console.WriteLine(" Player 1's turn");
+                Console.WriteLine("Player 1's turn");
                 Console.WriteLine("Enter Your Direction: ");
-                direction = Console.ReadLine()[0];
+                direction = Convert.ToChar(Console.ReadLine());
                 CurrentTurn = player1;
                 
             }
@@ -282,7 +283,7 @@ namespace CSharpTutorials
             {
                 Console.WriteLine(" Player2's turn");
                 Console.WriteLine("Enter Your Direction: ");
-                direction = Console.ReadLine()[0];
+                direction = Convert.ToChar(Console.ReadLine());
                 CurrentTurn = player2;
                 
             }
@@ -307,11 +308,13 @@ namespace CSharpTutorials
         }
         public bool IsGameOver()
         {
-            if(TotalTurns>9)
+            if(TotalTurns>11)
             {
                 Console.WriteLine("Game Over");
+                
                 return true;
             }
+            
             else
             { 
                 return false; 
@@ -322,14 +325,16 @@ namespace CSharpTutorials
         }
         public void DeclareWinner()
         {
-            if(player1.GemCount > player2.GemCount)
+           
+            if (player1.GemCount > player2.GemCount)
             {
                 Console.WriteLine("Player 1 is the winner!!");
+                
             }
             else if (player2.GemCount > player1.GemCount)
             { Console.WriteLine("Player 2 is the winner!!"); }
-            else 
-            { Console.WriteLine("Tie!!"); }
+           /* else 
+            { Console.WriteLine($"Tie!!"); }*/
         }
         
     }
@@ -340,7 +345,9 @@ namespace CSharpTutorials
     {
         static void Main(string[] args)
         {
-            game:
+            Console.WriteLine("Welcome to Gem Hunters Game!! \n Game Rules : 1. Players can not move diagnoly.Only Up(U),Down(D),Left(L) and Right(R) allowed." +
+                "\n 2.Can not move to cells which contain Obstacles(O). \n 3.Players can not overlap \n Okay!! Now let's begin the game!!");
+        game:
             Game game = new Game();
             game.StartGame();
             Console.WriteLine("Game Over!!Do you want to play again?(Y/N):");
@@ -349,18 +356,10 @@ namespace CSharpTutorials
             {
                 goto game;
             }
-            else 
+            else if (decision == 'N')
             {
                 Console.WriteLine("Game Over!!Thankyou for playing Gem Hunter!!");
             }
-
-
-           
-
-
-
-
-
 
         }
     }
