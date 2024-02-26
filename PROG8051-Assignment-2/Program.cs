@@ -208,9 +208,6 @@ namespace CSharpTutorials
                 return true;
             }
 
-
-
-
         }
         public void CollectGem(Player player)
 
@@ -220,7 +217,7 @@ namespace CSharpTutorials
             {
               
                player.GemCount++;
-                Console.WriteLine($"Woo-hoo, {player.name} got a GEM!");
+                Console.WriteLine($"Yay,{player.name} got a GEM!!");
 
             }
  
@@ -321,8 +318,6 @@ namespace CSharpTutorials
             { 
                 return false; 
             }
-
-            
 
         }
         public void DeclareWinner()
