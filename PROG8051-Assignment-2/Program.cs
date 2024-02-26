@@ -52,7 +52,7 @@ namespace CSharpTutorials
     {
         
         public string name;
-        public int GemCount;
+        public int GemCount = 0;
 
         //Properties
        
@@ -99,7 +99,7 @@ namespace CSharpTutorials
     {
 
         public string[,] Grid = new string[6, 6];
-        public int gemsPresent;
+        
 
         //Constructor
         public Board(int gems, int obstacles)
@@ -220,6 +220,7 @@ namespace CSharpTutorials
             {
               
                player.GemCount++;
+                Console.WriteLine($"Woo-hoo, {player.name} got a GEM!");
 
             }
  
@@ -295,6 +296,7 @@ namespace CSharpTutorials
             {
                 TotalTurns++;
                 CurrentTurn.Move(direction);
+                board.CollectGem(CurrentTurn);
                 board.Grid[CurrentTurn.position.X,CurrentTurn.position.Y] = value;
                 board.Grid[oldx,oldy] = "-";
                 board.display();
@@ -308,10 +310,10 @@ namespace CSharpTutorials
         }
         public bool IsGameOver()
         {
-            if(TotalTurns>11)
+            if(TotalTurns>29)
             {
                 Console.WriteLine("Game Over");
-                
+ 
                 return true;
             }
             
@@ -345,8 +347,8 @@ namespace CSharpTutorials
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Welcome to Gem Hunters Game!! \n Game Rules : 1. Players can not move diagnoly.Only Up(U),Down(D),Left(L) and Right(R) allowed." +
-                "\n 2.Can not move to cells which contain Obstacles(O). \n 3.Players can not overlap \n Okay!! Now let's begin the game!!");
+            Console.WriteLine("Welcome to Gem Hunters Game!!\nGame Rules : \n 1.Players can not move diagnoly.Only Up(U),Down(D),Left(L) and Right(R) allowed." +
+                "\n 2.Can not move to cells which contain Obstacles(O).\n 3.Players can not overlap\nOkay!! Now let's begin the game!!");
         game:
             Game game = new Game();
             game.StartGame();
