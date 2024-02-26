@@ -15,28 +15,33 @@ namespace CSharpTutorials
         // Fields
         int row;
         int col;
+        //public int[] axis;
 
         // Properties
-        public int X {  get { return row; } }
+        public int X { get { return row; } }
         public int Y { get { return col; } }
+
 
         // Constructor 
         public Position(int x, int y)
         {
-            row = x;
-            col = y;
+            this.row = x;
+            this.col = y;
         }
 
         //Method
-        public void ValidPosition(int row, int col)
+        public bool ValidPosition(int X, int Y)
         {
-            if ((row < 0 && col < 0) || (row > 6 && col > 6))
+            if (X < 0 || Y < 0 || X > 5 || Y > 5)
             {
                 Console.WriteLine("Invalid Move");
+                return false;
             }
-            else if ((row + 1) == (col + 1))
+            
+            else
             {
-                Console.WriteLine("Cannot move diagonally");
+                
+                return true;
             }
         }
     }
@@ -45,57 +50,40 @@ namespace CSharpTutorials
 
     class Player
     {
-        //Fields
-        string Player1;
-        string Player2;
-        int count;
+        
+        public string name;
+        int count = 0;
 
         //Properties
-        public string P1 {  get { return Player1; } }
-        public string P2 { get { return Player2; } }
+       
+        public Position position;
         public int GemCount { get { return count; } }
-
-        //Position[,] position = new Position[6,6];
-
-        public void CurrentTurn(int turn)
-        {
-
-           
-                if (turn % 2 == 0)
-                {
-                    Console.WriteLine(" Player 1's turn");
-               
-                }
-                else
-                {
-                 Console.WriteLine(" Player2's turn");
-                   // return Player2 + " " + turn;
-                }
-            
-
-        }
 
         // Create a method to get direction from the user such as 'U', 'D', 'L', 'R'
         public string Move(char direction)
 
         {
-            int i = 0;
-            int j = 0;
-            switch(direction)
+            int i = position.X;
+            int j = position.Y;
+
+            switch (direction)
             {
                 case 'U':
                     i -= 1;
-                    
+                    position = new Position(i, j);
+
                     break;
                 case 'D':
                     i += 1;
+                    position = new Position(i, j);
                     break;
                 case 'R':
                     j += 1;
-
+                    position = new Position(i, j);
                     break;
                 case 'L':
-                    j-=1;
+                    j -= 1;
+                    position = new Position(i, j);
                     break;
                 default:
                     Console.WriteLine("Invalid Move");
@@ -106,11 +94,11 @@ namespace CSharpTutorials
         }
     }
 
-  // Create a 6 x 6 Board
+    // Create a 6 x 6 Board
     class Board
     {
-        
-        string[,] Grid = new string[6,6];
+
+        public string[,] Grid = new string[6, 6];
 
 
         //Constructor
@@ -118,21 +106,21 @@ namespace CSharpTutorials
         {
 
 
-           /* string[,] board1 = {{"P1", "-", "G", "-", "-","O"},{"-", "O", "-", "G", "-","-"},{"O", "-", "-", "-", "-","G"} ,
-                               {"-", "G", "-", "O", "-","-"},{"-", "-", "-", "G", "-","-"},{"G", "-", "O", "-", "-","P2"}};*/
-           for(int i = 0;i< Grid.GetLength(0); i++)
+            /* string[,] board1 = {{"P1", "-", "G", "-", "-","O"},{"-", "O", "-", "G", "-","-"},{"O", "-", "-", "-", "-","G"} ,
+                                {"-", "G", "-", "O", "-","-"},{"-", "-", "-", "G", "-","-"},{"G", "-", "O", "-", "-","P2"}};*/
+            for (int i = 0; i < Grid.GetLength(0); i++)
             {
-                for (int j = 0; j < Grid.GetLength(1); j++) 
+                for (int j = 0; j < Grid.GetLength(1); j++)
                 {
                     Grid[i, j] = "-";
                 }
             }
             Grid[0, 0] = "P1";
-            Grid[Grid.GetLength(0) - 1  , Grid.GetLength(1) - 1] = "P2";
-           
+            Grid[Grid.GetLength(0) - 1, Grid.GetLength(1) - 1] = "P2";
+
             string elementSymbol1 = "G";
             string elementSymbol2 = "O";
-            PlaceGameElements(gems,elementSymbol1);
+            PlaceGameElements(gems, elementSymbol1);
             PlaceGameElements(obstacles, elementSymbol2);
 
         }
@@ -169,50 +157,73 @@ namespace CSharpTutorials
                     Console.Write(Grid[a, b] + "  ");
                 }
             }
-            
+
 
         }
-        
-        public void IsValidMove(Player player, char direction)
+
+        public bool IsValidMove(Player player, char direction)
         {
-            for(int a = 0;a < Grid.GetLength(0);a++)
-            { 
-            for(int b=0;b < Grid.GetLength(1);b++)
-                {
-                    if (Grid[a, b] == "O")
-                    {
-                        Console.WriteLine("Obstacle ahead!! Not a valid move");
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
+            int old_row = player.position.X;
+            int old_col = player.position.Y;
+            switch (direction)
+            {
+                case 'U':
+                    old_row -= 1;
+               
+                    break;
+                case 'D':
+                    old_row += 1;
+                    
+                    break;
+                case 'R':
+                    old_col += 1;
+                  
+                    break;
+                case 'L':
+                    old_col -= 1;
+                    
+                    break;
+                
+
             }
-            display();
-            
+            if (!player.position.ValidPosition(old_row, old_col))
+            { return false; }
+
+
+            else if (Grid[old_row, old_col] == "O")
+            {
+                Console.WriteLine("Obstacle ahead!! Not a valid move");
+                return false;
+            }
+            else if (Grid[old_row, old_col] == "P1" || Grid[old_row, old_col] == "P2")
+            {
+                Console.WriteLine("Player ahead!! Not a valid move");
+                return false;
+            }
+
+            else
+            {
+                return true;
+            }
+
+
+
+
         }
         public void CollectGem(Player player)
 
         {
-            int GemCount = 0;
+            int GemCount = player.GemCount;
 
-            for (int a = 0; a < Grid.GetLength(0); a++)
+
+            if (Grid[player.position.X, player.position.Y] == "G")
             {
-                for (int b = 0; b < Grid.GetLength(1); b++)
-                {
-                    if (Grid[a, b] == "G")
-                    {
-                        GemCount++;
-                        Grid[a, b] = "-";
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
+                GemCount++;
+                
+
             }
-          
+            
+
 
         }
 
@@ -221,8 +232,8 @@ namespace CSharpTutorials
     class Cell
     {
         string[] occupant = { "P1", "P2", "G", "O", "-" };
-        Board board;
         
+
     }
 
     // Create a class for Game 
@@ -230,35 +241,97 @@ namespace CSharpTutorials
     class Game
     {
         Board board;
-        Player Player1;
-        Player Player2;
+        Player player1;
+        Player player2;
         Player CurrentTurn;
+        char direction;
+
         int TotalTurns = 0;
         public Game()
         {
             Console.WriteLine("Let the game begin :");
-            //Board = new Board();
-            Player1 = new Player();
-            Player2 = new Player();
-
-
-
-
-
+            board = new Board(5, 4);
+            player1 = new Player();
+            player2 = new Player();
         }
         public void StartGame()
         {
-            Board board1 = new Board(2,3);
-           //
-           //board1.display(board);
-            //CurrentTurn.CurrentTurn();
+            player1.name = "P1";
+            player2.name = "P2";
+            player1.position = new Position(0, 0);
+            player2.position = new Position(5, 5);
 
-           
+            board.display();
+            while (!IsGameOver()) { SwitchTurn(); }
+            DeclareWinner();
 
+        }
+        public void SwitchTurn()
+        {
+            
+            repeat:
+            if (TotalTurns % 2 == 0)
+            {
+                Console.WriteLine(" Player 1's turn");
+                Console.WriteLine("Enter Your Direction: ");
+                direction = Console.ReadLine()[0];
+                CurrentTurn = player1;
+                
+            }
+            else
+            {
+                Console.WriteLine(" Player2's turn");
+                Console.WriteLine("Enter Your Direction: ");
+                direction = Console.ReadLine()[0];
+                CurrentTurn = player2;
+                
+            }
+            int oldx=CurrentTurn.position.X; 
+            int oldy=CurrentTurn.position.Y;
+
+            string value = board.Grid[oldx,oldy];
+            if (board.IsValidMove(CurrentTurn, direction))
+            {
+                TotalTurns++;
+                CurrentTurn.Move(direction);
+                board.Grid[CurrentTurn.position.X,CurrentTurn.position.Y] = value;
+                board.Grid[oldx,oldy] = "-";
+                board.display();
+
+            }
+            else
+            {
+                goto repeat;
+            }
+
+        }
+        public bool IsGameOver()
+        {
+            if(TotalTurns>9)
+            {
+                Console.WriteLine("Game Over");
+                return true;
+            }
+            else
+            { 
+                return false; 
+            }
 
             
 
         }
+        public void DeclareWinner()
+        {
+            if(player1.GemCount > player2.GemCount)
+            {
+                Console.WriteLine("Player 1 is the winner!!");
+            }
+            else if (player2.GemCount > player1.GemCount)
+            { Console.WriteLine("Player 2 is the winner!!"); }
+            else 
+            { Console.WriteLine("Tie!!"); }
+        }
+        
     }
 
 
@@ -267,46 +340,22 @@ namespace CSharpTutorials
     {
         static void Main(string[] args)
         {
-            Board board = new Board(5, 3);
-            board.display();
-            Position position = new Position(0,0);
-            position.ValidPosition(0,0);
-
-            Player player1 = new Player();  
-
-            
-            player1.CurrentTurn(10);
-            
-
-            Console.WriteLine("Enter Your Direction: ");
-            char UserDirection = Console.ReadLine()[0];
-            player1.Move(UserDirection);
-
-
-
-
-
-
-
-
-
-
-
-            // board.PlaceGameElements(3, "O");
+            game:
             Game game = new Game();
             game.StartGame();
+            Console.WriteLine("Game Over!!Do you want to play again?(Y/N):");
+            char decision =  Convert.ToChar(Console.ReadLine());    
+            if(decision == 'Y')
+            {
+                goto game;
+            }
+            else 
+            {
+                Console.WriteLine("Game Over!!Thankyou for playing Gem Hunter!!");
+            }
 
 
-
-            // Position pos = new Position(0, 0);
-            // pos.ValidPosition();
-            // Player player = new Player();
-            //player.Move('U');
-            //board.display();
-
-            // User inputs
-
-
+           
 
 
 
